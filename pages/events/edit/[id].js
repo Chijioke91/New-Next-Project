@@ -10,6 +10,7 @@ import { API_URL } from '@/config/index';
 import Layout from '@/components/Layout';
 import styles from '@/styles/Form.module.css';
 import Modal from '@/components/Modal';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function EditEventPage({ evt }) {
   const router = useRouter();
@@ -43,6 +44,15 @@ export default function EditEventPage({ evt }) {
     } else {
       const evt = await res.json();
       router.push(`/events/${evt.slug}`);
+    }
+  };
+
+  const imageUploaded = async () => {
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+    setImagePreview(data.image.formats.thumbnail.url);
+    if (res.ok) {
+      setShowModal(false);
     }
   };
 
@@ -101,7 +111,7 @@ export default function EditEventPage({ evt }) {
       </div>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        Image Upload
+        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
       </Modal>
     </Layout>
   );
